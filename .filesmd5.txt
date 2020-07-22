@@ -1,0 +1,1 @@
+{"/etc/gshadow":"","/etc/localtime":"","/etc/passwd":"","/etc/shadow":"","/etc/sysconfig/clock":"","/etc/sysconfig/i18n":"","/root/b.txt":"aaaaaa"}
