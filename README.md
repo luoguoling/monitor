@@ -1,2 +1,13 @@
 # monitor
 服务器监控
+1.系统监控：cpu 内存 负载 磁盘 io
+2.安全监控:对重要文件的md5值进行监控
+3.日志监控：监控文件种的错误日志并报警
+4.进程监控：监控重要的进程是否运行
+5.流量监控
+
+使用方法：
+nohup ./main -start -config config/config.yaml -d &
+nohup ./main -stop
+ 
+v1版本问题：cpu消耗有点儿高
