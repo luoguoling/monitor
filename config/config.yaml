@@ -1,0 +1,41 @@
+webhook: "https://oapi.dingtalk.com/robot/send?access_token=187918ed0afc579ee5e458f0bf23c84a1bafdd1782b683ad42873b4d41werwew14"
+pid: "pid"
+snap_path: "./logs"
+alter_limit: 80
+interval: 130
+projectname: "项目:game_lz"
+#发送和接收流量M
+send: 20
+recv: 10
+#监控进程是否启动
+processes:
+  - "server.py"
+  - "monitor"
+#监控文件是否变化
+files:
+  - "/etc/passwd"
+  - "/etc/shadow"
+  - "/etc/gshadow"
+  - "/etc/sysconfig/clock"
+  - "/etc/localtime"
+  - "/etc/sysconfig/i18n"
+  - "/root/b.txt"
+ #定义日志文件里面的异常信息
+exceptionkeywords:
+  - "error"
+  - "warn"
+  - "exception"
+  - "Exception"
+  - "failure"
+  - "Error"
+  - "timeout"
+#监控日志文件是否有异常(系统日志，程序日志，nginx日志,php日志)
+errfiles:
+ - "/var/log/messages"
+ - "/var/log/secure"
+
+
+
+
+
+
