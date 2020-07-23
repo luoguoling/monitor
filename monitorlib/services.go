@@ -40,8 +40,9 @@ func checkLoad()  {
 func MonitorLoad()  {
 	for{
 		checkLoad()
+		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}
-	time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
+
 
 }
 
@@ -125,8 +126,9 @@ func checkNet()  {
 func MonitorNet()  {
 	for{
 		checkNet()
+		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}
-	time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
+
 }
 
 
