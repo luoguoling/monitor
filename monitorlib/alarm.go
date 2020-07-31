@@ -1,4 +1,4 @@
-//报警方法
+//报警方法后面可以增加其他报警方法
 package monitorlib
 
 import (

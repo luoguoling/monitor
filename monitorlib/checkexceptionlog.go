@@ -22,11 +22,20 @@ func CheckFileContainsStr(path,str string) bool{
 	}
 	defer fi.Close()
 	br := bufio.NewReader(fi)
+	excludekeys := "No such file or directory"
 	for {
 		a, _, c := br.ReadLine()
 		if strings.Contains(string(a), str){
-			exist = true
-			return exist
+			if strings.Contains(string(a),excludekeys){
+				//fmt.Println("虽然含有错误信息但是是no such file类型排除")
+				//newlog.Mylog("程序自身错误").Warn("虽然含有错误信息但是是no such file类型排除")
+				exist = false
+			}else{
+				exist = true
+				//newlog.Mylog("程序自身错误").Warn("虽然含有错误信息但是已经排除no such")
+				//return exist
+			}
+
 		}
 		if c == io.EOF {
 			break
@@ -57,14 +66,13 @@ func CheckExceptionLog()  {
 		//fmt.Println(exceptionslices)
 
 	}
-	fmt.Println("exceptionslics的长度是111",exceptionslices)
 	exceptionslicesstr,err := json.Marshal(exceptionslices)
 	if err != nil{
 		newlog.MyLogger.Warn("解析异常")
 	}
 	result := string([]byte(exceptionslicesstr))
-	fmt.Println("exceptionslics的长度是:",len(exceptionslices))
-	fmt.Println(exceptionslices)
+	//fmt.Println("exceptionslics的长度是:",len(exceptionslices))
+	//fmt.Println(exceptionslices)
 	sendstr = config.GetConfig().ProjectName +" " + string(result) + "文件含有错误异常信息!!!" + string(currentime)
 	sendstrMsg := strings.Replace(sendstr,"\"","",-1)
 	if len(exceptionslices)  != 0{

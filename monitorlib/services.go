@@ -20,7 +20,7 @@ func MonitorCpu()  {
 	for {
 		per, _ := cpu.Percent(time.Duration(config.GetConfig().Interval)*time.Second, false)
 		if per[0] > config.GetConfig().AlterLimit {
-			newlog.MyLogger.Warn("项目cpu监控报警!!!")
+			newlog.Mylog("系统报警").Warn("cpu使用率过高!!!!")
 			SendDingMsg("项目cpu监控报警")
 		}
 	}
@@ -51,7 +51,7 @@ func MonitorMem(){
 	for {
 		m, _ := mem.VirtualMemory()
 		if m.UsedPercent > config.GetConfig().AlterLimit {
-			newlog.MyLogger.Warn("内存报警")
+			newlog.Mylog("系统报警").Warn("内存过高!!!!")
 		}
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}
