@@ -15,6 +15,11 @@ import (
 	"fmt"
 )
 
+//float转化为string
+func FloatToString(input float64) string{
+	return strconv.FormatFloat(float64(input),'f',6,64)
+}
+
 //监控cpu使用率
 func MonitorCpu()  {
 	for {
@@ -34,13 +39,17 @@ func checkLoad()  {
 	load5Info := loadinfo.Load5
 	if int(load5Info) > 2*cpuNum{
 		newlog.Mylog("系统报警").Warn("cpu负载报警!!!!")
-		SendDingMsg("cpu负载报警")
+		msg := "cpu负载过高已经超过警告值" + " " + FloatToString(config.GetConfig().AlterLimit)
+		SendDingMsg(msg)
 	}
 }
 func MonitorLoad()  {
 	for{
 		checkLoad()
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
+		msg := "负载过高已经超过警告值" + " " + FloatToString(config.GetConfig().AlterLimit)
+		newlog.Mylog("系统报警").Warn(msg)
+		SendDingMsg(msg)
 	}
 
 
@@ -51,7 +60,9 @@ func MonitorMem(){
 	for {
 		m, _ := mem.VirtualMemory()
 		if m.UsedPercent > config.GetConfig().AlterLimit {
-			newlog.Mylog("系统报警").Warn("内存过高!!!!")
+			msg := "内存报警:已经超过警告值" + " " + FloatToString(config.GetConfig().AlterLimit)
+			newlog.Mylog("系统报警").Warn(msg)
+			SendDingMsg(msg)
 		}
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}
@@ -88,6 +99,8 @@ func MonitorDisk(){
 		warnDiskList := checkDisk()
 		if len(warnDiskList) != 0{
 			newlog.Mylog("系统报警").Warn("磁盘报警了!!!")
+			msg := "磁盘报警:已经超过警告值" + " " + FloatToString(config.GetConfig().AlterLimit)
+			SendDingMsg(msg)
 		}
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}
@@ -127,6 +140,7 @@ func MonitorNet()  {
 	for{
 		checkNet()
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
+		SendDingMsg("流量超过了警告值")
 	}
 
 }
