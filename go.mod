@@ -3,7 +3,7 @@ module mwmonitor
 go 1.14
 
 require (
-	github.com/TomatoMr/visor v0.0.0-20200603061124-16e43e1a68cd // indirect
+	github.com/TomatoMr/visor v0.0.0-20200603061124-16e43e1a68cd
 	github.com/pkg/errors v0.9.1
 	github.com/shirou/gopsutil v2.20.6+incompatible
 	go.uber.org/zap v1.15.0

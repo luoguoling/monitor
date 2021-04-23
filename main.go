@@ -5,20 +5,27 @@ import (
 	"fmt"
 	_ "github.com/TomatoMr/visor/config"
 	"io/ioutil"
+	"log"
 	"mwmonitor/config"
 	"mwmonitor/monitorlib"
 	_ "mwmonitor/monitorlib"
+	"mwmonitor/publib"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"os/exec"
 	"os/signal"
 	"sync"
 	"syscall"
 )
+
 var wg sync.WaitGroup
 
-
-
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
+		fmt.Println("6060")
+	}()
 	var configPath string
 	var start bool
 	var stop bool
@@ -34,46 +41,77 @@ func main() {
 		fmt.Print(err)
 		os.Exit(-1)
 	}
-		if start {
-			if daemon {
-				cmd := exec.Command(os.Args[0], "-start", "-config="+configPath)
-				cmd.Start()
-				os.Exit(0)
-			}
-			wg.Add(1)
-			fmt.Println("start.")
-			Start()
-			wg.Wait()
+	if start {
+		if daemon {
+			cmd := exec.Command(os.Args[0], "-start", "-config="+configPath)
+			cmd.Start()
+			os.Exit(0)
 		}
+		wg.Add(1)
+		fmt.Println("start.")
+		Start()
+		wg.Wait()
+	}
 
-		if stop {
-			Stop()
-		}
+	if stop {
+		Stop()
+	}
 
-		if restart {
-			Restart()
-		}
+	if restart {
+		Restart()
+	}
 
-		//处理信号
-		sigs := make(chan os.Signal)
-		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
-		select {
-		case <-sigs:
-			return
-		}
+	//处理信号
+	sigs := make(chan os.Signal)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+	select {
+	case <-sigs:
+		return
+	}
+
 }
+
 func Start() {
 	defer wg.Done()
 	ioutil.WriteFile(config.GetConfig().Pid, []byte(fmt.Sprintf("%d", os.Getpid())), 0666) //记录pid
-	go monitorlib.MonitorCpu()
-	go monitorlib.MonitorMem()
-	go monitorlib.MonitorExceptionLog()
-	go monitorlib.Monitorfile()
-	go monitorlib.MonitorAllProRunning()
-	go monitorlib.MonitorIptable()
-	go monitorlib.MonitorDisk()
-	go monitorlib.MonitorLoad()
+	monitoritems := config.GetConfig().MonitorItems
+	if publib.IsValueInList("MonitorCpu", monitoritems) {
+		go monitorlib.MonitorCpu()
+	}
+	if publib.IsValueInList("MonitorMem", monitoritems) {
+		go monitorlib.MonitorMem()
+	}
+	if publib.IsValueInList("MonitorExceptionLog", monitoritems) {
+		go monitorlib.MonitorExceptionLog()
+	}
+	if publib.IsValueInList("Monitorfile", monitoritems) {
+		go monitorlib.Monitorfile()
+	}
+	if publib.IsValueInList("MonitorAllProRunning", monitoritems) {
+		go monitorlib.MonitorAllProRunning()
+	}
+	if publib.IsValueInList("MonitorIptable", monitoritems) {
+		go monitorlib.MonitorIptable()
+	}
+	if publib.IsValueInList("MonitorDisk", monitoritems) {
+		go monitorlib.MonitorDisk()
+	}
+	if publib.IsValueInList("MonitorLoad", monitoritems) {
+		go monitorlib.MonitorLoad()
+	}
+
 	//go monitorlib.MonitorNet()
+	if publib.IsValueInList("MonitorDangerCmdLog", monitoritems) {
+		go monitorlib.MonitorDangerCmdLog()
+	}
+	if publib.IsValueInList("MonitorCheckIp", monitoritems) {
+		go monitorlib.MonitorCheckIp()
+	}
+
+	//fmt.Println("开始执行任务计划")
+	//go monitorlib.CheckCron()
+	//fmt.Println("任务计划执行完毕")
+	//time.Sleep(time.Duration(config.GetConfig().Interval) *2* time.Second)
 }
 
 func Stop() {
@@ -98,11 +136,11 @@ func Restart() {
 	//time.Sleep(time.Duration(4) * time.Second)
 	//Start()
 }
-	//monitorlib.MonitorCpu()
-	//monitorlib.MonitorExceptionLog()
 
-	//monitorlib.SendDingMsg("awerwerwtest")
-	//files := config.GetConfig().Files
-	//fmt.Println(files)
-	//monitorlib.Notifyfiles(files)
+//monitorlib.MonitorCpu()
+//monitorlib.MonitorExceptionLog()
 
+//monitorlib.SendDingMsg("awerwerwtest")
+//files := config.GetConfig().Files
+//fmt.Println(files)
+//monitorlib.Notifyfiles(files)
