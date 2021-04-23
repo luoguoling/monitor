@@ -1,4 +1,4 @@
-webhook: "https://oapi.dingtalk.com/robot/send?access_token=xxxx"
+webhook: "https://oapi.dingtalk.com/robot/send?access_token=187918ed0afc579ee5e458f0bf23c84a1bafdd1782b683ad42873b4d41bba0d7"
 pid: "pid"
 snap_path: "./logs"
 alter_limit: 80
@@ -9,8 +9,8 @@ send: 20
 recv: 10
 #监控进程是否启动
 processes:
-  - "server.py"
-  - "monitor"
+ # - "server.py"
+  #- "monitor"
 #监控文件是否变化
 files:
   - "/etc/passwd"
@@ -33,6 +33,38 @@ exceptionkeywords:
 errfiles:
  - "/var/log/messages"
  - "/var/log/secure"
+#任务计划条数
+cronnum: 3
+#允许登录ip
+writeip:
+  - "129.211.181.143"
+  - "222.190.107.198"
+#危险命令
+dangerwords:
+  - "wget"
+  - "sz"
+  - "rz"
+  - "curl"
+  - "rm"
+  - "useradd"
+  - "ftp"
+  - "chmod"
+  - "gcc"
+  - "put"
+  - "echo"
+  - "scp"
+#配置需要执行的监控项
+monitoritems:
+  - "MonitorMem" //监控内存
+  - "MonitorExceptionLog"  //监控指定文件是否含有异常日志
+  - "Monitorfile"  //监控文件md5值是否有变化
+  - "MonitorAllProRunning"  //监控进程是否在运行
+  - "MonitorIptable"  //监控防火墙是否开启
+  - "MonitorDisk"     //监控磁盘利用率
+  - "MonitorLoad"      //监控服务器负载
+  - "MonitorDangerCmdLog"  //监控日志是否含有危险命令
+  - "MonitorCheckIp"       //监控当前登录ip是否为允许ip
+
 
 
 
