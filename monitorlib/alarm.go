@@ -30,13 +30,12 @@ func SendDingMsg(msg string) {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	//发送请求
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		// handle error
 		fmt.Println(err)
 		fmt.Println("顶顶报发送异常!!!")
 	}
-
+	defer resp.Body.Close()
 	//logger.MyLogger.Error("aaerw")
 	//logrus.WithFields(logrus.Fields{"aa":"aa","username":"rolin"}).Info("aaaa")
 	//logrus.Error("aaaa")
