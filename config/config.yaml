@@ -1,4 +1,4 @@
-webhook: "https://oapi.dingtalk.com/robot/send?access_token=187918ed0afc579ee5e458f0bf23c84a1bafdd1782b683ad42873b4d41werwew14"
+webhook: "https://oapi.dingtalk.com/robot/send?access_token=xxxx"
 pid: "pid"
 snap_path: "./logs"
 alter_limit: 80
