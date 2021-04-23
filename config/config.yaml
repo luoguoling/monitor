@@ -55,15 +55,15 @@ dangerwords:
   - "scp"
 #配置需要执行的监控项
 monitoritems:
-  - "MonitorMem" //监控内存
-  - "MonitorExceptionLog"  //监控指定文件是否含有异常日志
-  - "Monitorfile"  //监控文件md5值是否有变化
-  - "MonitorAllProRunning"  //监控进程是否在运行
-  - "MonitorIptable"  //监控防火墙是否开启
-  - "MonitorDisk"     //监控磁盘利用率
-  - "MonitorLoad"      //监控服务器负载
-  - "MonitorDangerCmdLog"  //监控日志是否含有危险命令
-  - "MonitorCheckIp"       //监控当前登录ip是否为允许ip
+  - "MonitorMem" #监控内存
+  - "MonitorExceptionLog"  #监控指定文件是否含有异常日志
+  - "Monitorfile"  #监控文件md5值是否有变化
+  - "MonitorAllProRunning"  #监控进程是否在运行
+  - "MonitorIptable"  #监控防火墙是否开启
+  - "MonitorDisk"     #监控磁盘利用率
+  - "MonitorLoad"      #监控服务器负载
+  - "MonitorDangerCmdLog"  #监控日志是否含有危险命令
+  - "MonitorCheckIp"       #监控当前登录ip是否为允许ip
 
 
 
