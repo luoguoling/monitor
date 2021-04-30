@@ -22,6 +22,7 @@ import (
 var wg sync.WaitGroup
 
 func main() {
+	pool := make(chan struct{}, 10) //控制并发数量
 	go func() {
 		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
 		fmt.Println("6060")
@@ -48,8 +49,12 @@ func main() {
 			os.Exit(0)
 		}
 		wg.Add(1)
+		pool <- struct{}{} //控制并发数量
 		fmt.Println("start.")
 		Start()
+		defer func() {
+			<-pool
+		}()
 		wg.Wait()
 	}
 
