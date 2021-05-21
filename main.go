@@ -20,9 +20,32 @@ import (
 )
 
 var wg sync.WaitGroup
+var pool chan struct{}
 
+type Glimit struct {
+	n int
+	c chan struct{}
+}
+
+// initialization Glimit struct
+func New(n int) *Glimit {
+	return &Glimit{
+		n: n,
+		c: make(chan struct{}, n),
+	}
+}
+
+// Run f in a new goroutine but with limit.
+func (g *Glimit) Run(f func()) {
+	g.c <- struct{}{}
+	go func() {
+		f()
+		<-g.c
+	}()
+}
 func main() {
-	pool := make(chan struct{}, 10) //控制并发数量
+	//并发数目限制，不能超过100
+	g := New(100)
 	go func() {
 		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
 		fmt.Println("6060")
@@ -49,12 +72,8 @@ func main() {
 			os.Exit(0)
 		}
 		wg.Add(1)
-		pool <- struct{}{} //控制并发数量
 		fmt.Println("start.")
-		Start()
-		defer func() {
-			<-pool
-		}()
+		g.Run(Start)
 		wg.Wait()
 	}
 
