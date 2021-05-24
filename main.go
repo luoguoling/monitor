@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"mwmonitor/config"
+	newlog "mwmonitor/logger"
 	"mwmonitor/monitorlib"
 	_ "mwmonitor/monitorlib"
 	"mwmonitor/publib"
@@ -18,7 +19,9 @@ import (
 	"sync"
 	"syscall"
 )
-
+const (
+	confFilePath = "./config";
+)
 var wg sync.WaitGroup
 var pool chan struct{}
 
@@ -92,10 +95,52 @@ func main() {
 	case <-sigs:
 		return
 	}
+	//处理热更新
+	//watch,err := fsnotify.NewWatcher();
+	//if err!=nil{
+	//	newlog.Mylog("本身系统日志")
+	//}
+	//defer watch.Close()
+	//err = watch.Add(confFilePath)
+	//if err!=nil{
+	//	newlog.MyLogger.Error("watch发生错误")
+	//}
+	////启动一个goroutine来处理监听事件
+	//go func() {
+	//	for{
+	//		select {
+	//		case ev := <- watch.Events:
+	//			{
+	//			if ev.Op&fsnotify.Write == fsnotify.Write{
+	//				//监听到配置文件发生改变，重启进程
+	//				fmt.Println("监听到配置文件发生改变，重启进程!!!!")
+	//				//fmt.Println("关闭")
+	//				Stop()
+	//				fmt.Println("开启!!!")
+	//				//Start()
+	//			}
+	//			}
+	//		case err := <-watch.Errors:
+	//			{
+	//			fmt.Println("error",err)
+	//				return
+	//			}
+	//
+	//
+	//		}
+	//	}
+	//}()
+	//select {};
 
 }
 
 func Start() {
+	//处理异常退出
+	defer func() {
+		if err := recover();err!=nil{
+			newlog.Mylog("程序发生异常").Error("主程序发生异常被捕获"+fmt.Sprintf("%s",err))
+		}
+	}()
 	defer wg.Done()
 	ioutil.WriteFile(config.GetConfig().Pid, []byte(fmt.Sprintf("%d", os.Getpid())), 0666) //记录pid
 	monitoritems := config.GetConfig().MonitorItems
