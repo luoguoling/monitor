@@ -16,6 +16,11 @@ import (
 
 //获取公有ip
 func GetPubIp1() (string, error) {
+	defer func() {
+		if err:=recover();err!=nil{
+			logger.Mylog("程序自身错误111").Error("访问外网ip报错")
+		}
+	}()
 	resp, err := http.Get("http://myexternalip.com/raw")
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
@@ -34,6 +39,11 @@ func GetPubIp1() (string, error) {
 
 //获取公有ip2
 func GetPubIp() (string, error) {
+	defer func() {
+		if err:=recover();err!=nil{
+			logger.Mylog("程序自身错误111").Error("访问外网ip报错")
+		}
+	}()
 	resp, err := http.Get("http://myip.ipip.net")
 	if err != nil {
 		os.Stderr.WriteString(err.Error())
