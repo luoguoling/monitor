@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"mwmonitor/config"
+	"mwmonitor/logger"
 	"net"
 	"net/http"
 	"os"
@@ -25,6 +26,9 @@ func GetPubIp1() (string, error) {
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.Mylog("程序自身错误").Error("访问外网ip报错")
+	}
 	return string(data), nil
 }
 
@@ -40,6 +44,9 @@ func GetPubIp() (string, error) {
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.Mylog("程序自身错误").Error("访问外网ip报错")
+	}
 	stringdata := string(data)
 	ip1 := strings.Split(stringdata, " ")[1]
 	ip := strings.Split(ip1, ":")[0]
@@ -145,9 +152,9 @@ func IsValueInList(value string, list []string) bool {
 }
 
 //处理panic,用try catch形式
-func Try(fun func(),handler func(interface{}))  {
+func Try(fun func(), handler func(interface{})) {
 	defer func() {
-		if err := recover();err!=nil{
+		if err := recover(); err != nil {
 			handler(err)
 		}
 	}()
