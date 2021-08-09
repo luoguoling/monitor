@@ -1,0 +1,18 @@
+---
+- hosts: monitor
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: copy monitor
+      copy:
+        src: /root/monitor/
+        dest: /root/monitor/
+        backup: yes
+        mode: 755
+        owner: root
+        group: root
+    - name: restart monitor
+      shell: cd /root/monitor;nohup ./main -restart
+    - name: check monitor
+      shell: ps aux|grep main
