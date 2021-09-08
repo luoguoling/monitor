@@ -19,9 +19,11 @@ import (
 	"sync"
 	"syscall"
 )
+
 const (
-	confFilePath = "./config";
+	confFilePath = "./config"
 )
+
 var wg sync.WaitGroup
 var pool chan struct{}
 
@@ -47,6 +49,11 @@ func (g *Glimit) Run(f func()) {
 	}()
 }
 func main() {
+	defer func() {
+		if err := recover(); err != nil {
+			newlog.Mylog("main程序发生错误").Error("main程序发生错误!!!!")
+		}
+	}()
 	//并发数目限制，不能超过100
 	g := New(100)
 	go func() {
@@ -137,8 +144,8 @@ func main() {
 func Start() {
 	//处理异常退出
 	defer func() {
-		if err := recover();err!=nil{
-			newlog.Mylog("程序发生异常").Error("主程序发生异常被捕获"+fmt.Sprintf("%s",err))
+		if err := recover(); err != nil {
+			newlog.Mylog("程序发生异常").Error("主程序发生异常被捕获" + fmt.Sprintf("%s", err))
 		}
 	}()
 	defer wg.Done()
