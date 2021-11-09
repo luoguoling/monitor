@@ -1,4 +1,4 @@
-webhook: "https://oapi.dingtalk.com/robot/send?access_token=xxxxx"
+webhook: "https://oapi.dingtalk.com/robot/send?access_token=187918ed0afc579ee5e458f0bf23c84a1bafdd1782b683ad42873b4d41bba0d7"
 pid: "pid"
 snap_path: "./logs"
 alter_limit: 80
@@ -6,7 +6,7 @@ interval: 130
 projectname: "项目:game_lz"
 #发送和接收流量M
 send: 20
-recv: 10
+recv: 323
 #监控进程是否启动
 processes:
  # - "server.py"
@@ -37,8 +37,8 @@ errfiles:
 cronnum: 3
 #允许登录ip
 writeip:
-  - "xxx.211.181.143"
-  - "xxx.190.107.198"
+  - "129.211.181.143"
+  - "222.190.107.198"
 #危险命令
 dangerwords:
   - "wget"

@@ -36,6 +36,7 @@ func RunCommand(cmd string) (string, error) {
 		return runInLinux(cmd)
 	}
 }
+
 //根据进程名判断进程是否运行
 func CheckProRunning(serverName string) (bool, error) {
 	a := `ps aux | awk '/` + serverName + `/ && !/awk/ {print $2}'`
@@ -45,32 +46,33 @@ func CheckProRunning(serverName string) (bool, error) {
 	}
 	return pid != "", nil
 }
+
 //检查所有进程是否在运行
-func CheckAllProRunning()  {
+func CheckAllProRunning() {
 	currentime := publib.GetTime()
-	notRunningPros := make([]string,0)
+	notRunningPros := make([]string, 0)
 	processes := config.GetConfig().Processes
-	for _,process := range processes{
-		isRunning,_ := CheckProRunning(process)
-		if isRunning == false{
-			notRunningPros = append(notRunningPros,process)
+	for _, process := range processes {
+		isRunning, _ := CheckProRunning(process)
+		if isRunning == false {
+			notRunningPros = append(notRunningPros, process)
 		}
 	}
-	notRunningPosString,_ := json.Marshal(notRunningPros)
+	notRunningPosString, _ := json.Marshal(notRunningPros)
 	result := string([]byte(notRunningPosString))
-	pubip,err := publib.GetPubIp()
-	if err != nil{
+	pubip, err := publib.GetPubIp()
+	if err != nil {
 		newlog.Mylog("程序自身错误").Error("获取公有ip报错!!!")
 	}
 	sendstr := config.GetConfig().ProjectName + ":::" + pubip + ":::" + result + "进程没有启动!!!" + string(currentime)
-	sendstrMsg := strings.Replace(sendstr,"\"","",-1)
-	if len(notRunningPros)  != 0{
+	sendstrMsg := strings.Replace(sendstr, "\"", "", -1)
+	if len(notRunningPros) != 0 {
 		newlog.Mylog("进程监控").Warn(sendstrMsg)
 		SendDingMsg(sendstrMsg)
 	}
 }
-func MonitorAllProRunning(){
-	for{
+func MonitorAllProRunning() {
+	for {
 		CheckAllProRunning()
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}

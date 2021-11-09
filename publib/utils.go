@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"mwmonitor/config"
-	"mwmonitor/logger"
+	//"mwmonitor/logger"
 	"net"
 	"net/http"
 	"os"
@@ -17,8 +17,8 @@ import (
 //获取公有ip
 func GetPubIp1() (string, error) {
 	defer func() {
-		if err:=recover();err!=nil{
-			logger.Mylog("程序自身错误111").Error("访问外网ip报错")
+		if err := recover(); err != nil {
+			fmt.Println("panic get ip")
 		}
 	}()
 	resp, err := http.Get("http://myexternalip.com/raw")
@@ -32,7 +32,7 @@ func GetPubIp1() (string, error) {
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Mylog("程序自身错误").Error("访问外网ip报错")
+		fmt.Println("panic get ip")
 	}
 	return string(data), nil
 }
@@ -40,8 +40,8 @@ func GetPubIp1() (string, error) {
 //获取公有ip2
 func GetPubIp() (string, error) {
 	defer func() {
-		if err:=recover();err!=nil{
-			logger.Mylog("程序自身错误111").Error("访问外网ip报错")
+		if err := recover(); err != nil {
+			fmt.Println("panic get ip")
 		}
 	}()
 	resp, err := http.Get("http://myip.ipip.net")
@@ -55,7 +55,7 @@ func GetPubIp() (string, error) {
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Mylog("程序自身错误").Error("访问外网ip报错")
+		fmt.Println("panic get ip")
 	}
 	stringdata := string(data)
 	ip1 := strings.Split(stringdata, " ")[1]
@@ -68,7 +68,6 @@ func GetPubIp() (string, error) {
 func GetTime() string {
 	currentime := time.Now().Format("2006-01-02 15:04:05")
 	return currentime
-
 }
 
 //判断目录是否存在
@@ -81,6 +80,13 @@ func PathExists(path string) bool {
 		return false
 	}
 	return false
+}
+
+// 处理异常
+func HandleError(err error, why string) {
+	if err != nil {
+		fmt.Println(why, err)
+	}
 }
 
 //获取监控项目名字

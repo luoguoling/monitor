@@ -1,5 +1,6 @@
 //查看文件是否含有异常信息，及时报警写入日志es
 package monitorlib
+
 import (
 	"bufio"
 	"encoding/json"
@@ -12,8 +13,9 @@ import (
 	"strings"
 	"time"
 )
+
 //判断某个文件是否含有某一个字符串
-func CheckFileContainsStr(path,str string) bool{
+func CheckFileContainsStr(path, str string) bool {
 	fi, err := os.Open(path)
 	exist := false
 	if err != nil {
@@ -25,12 +27,12 @@ func CheckFileContainsStr(path,str string) bool{
 	excludekeys := "No such file or directory"
 	for {
 		a, _, c := br.ReadLine()
-		if strings.Contains(string(a), str){
-			if strings.Contains(string(a),excludekeys){
+		if strings.Contains(string(a), str) {
+			if strings.Contains(string(a), excludekeys) {
 				//fmt.Println("虽然含有错误信息但是是no such file类型排除")
 				//newlog.Mylog("程序自身错误").Warn("虽然含有错误信息但是是no such file类型排除")
 				exist = false
-			}else{
+			} else {
 				exist = true
 				//newlog.Mylog("程序自身错误").Warn("虽然含有错误信息但是已经排除no such")
 				//return exist
@@ -43,7 +45,7 @@ func CheckFileContainsStr(path,str string) bool{
 	}
 	return exist
 }
-func CheckExceptionLog()  {
+func CheckExceptionLog() {
 	currentime := publib.GetTime()
 	//errfiles := []string{"/root/a.txt","/root/b.txt"}
 	//exceptionkeywords := []string{"err","warning", "exception"}
@@ -53,39 +55,37 @@ func CheckExceptionLog()  {
 	var exceptionslices []map[string]string
 	//var exceptionmap = make(map[string]string)
 	var sendstr string
-	for _,errfile := range errfiles{
+	for _, errfile := range errfiles {
 		kTmp := errfile
-		for _,exceptionkeyword := range exceptionkeywords{
-			if CheckFileContainsStr(errfile,exceptionkeyword){
+		for _, exceptionkeyword := range exceptionkeywords {
+			if CheckFileContainsStr(errfile, exceptionkeyword) {
 				vTmp := exceptionkeyword
 				var exceptionmap = make(map[string]string)
 				exceptionmap[kTmp] = vTmp
-				exceptionslices = append(exceptionslices,exceptionmap)
+				exceptionslices = append(exceptionslices, exceptionmap)
 			}
 		}
 		//fmt.Println(exceptionslices)
 
 	}
-	exceptionslicesstr,err := json.Marshal(exceptionslices)
-	if err != nil{
+	exceptionslicesstr, err := json.Marshal(exceptionslices)
+	if err != nil {
 		newlog.MyLogger.Warn("解析异常")
 	}
 	result := string([]byte(exceptionslicesstr))
 	//fmt.Println("exceptionslics的长度是:",len(exceptionslices))
 	//fmt.Println(exceptionslices)
-	sendstr = config.GetConfig().ProjectName +" " + string(result) + "文件含有错误异常信息!!!" + string(currentime)
-	sendstrMsg := strings.Replace(sendstr,"\"","",-1)
-	if len(exceptionslices)  != 0{
+	sendstr = config.GetConfig().ProjectName + " " + string(result) + "文件含有错误异常信息!!!" + string(currentime)
+	sendstrMsg := strings.Replace(sendstr, "\"", "", -1)
+	if len(exceptionslices) != 0 {
 		newlog.Mylog("文件报错").Warn(sendstrMsg)
-		fmt.Println("钉钉发送报警消息:",sendstrMsg)
+		fmt.Println("钉钉发送报警消息:", sendstrMsg)
 		SendDingMsg(sendstrMsg)
 	}
 }
-func MonitorExceptionLog(){
-	for{
+func MonitorExceptionLog() {
+	for {
 		CheckExceptionLog()
 		time.Sleep(time.Duration(config.GetConfig().Interval) * time.Second)
 	}
 }
-
-

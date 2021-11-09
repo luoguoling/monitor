@@ -13,7 +13,7 @@ import (
 //钉钉报警
 func SendDingMsg(msg string) {
 	defer func() {
-		if err := recover();err!=nil{
+		if err := recover(); err != nil {
 			newlog.Mylog("程序日志").Error("发送报警异常")
 		}
 	}()
@@ -36,15 +36,14 @@ func SendDingMsg(msg string) {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	//发送请求
 	resp, err := client.Do(req)
+
 	if err != nil {
 		// handle error
 		fmt.Println(err)
 		fmt.Println("顶顶报发送异常!!!")
 	}
 	defer resp.Body.Close()
-
 	//logger.MyLogger.Error("aaerw")
 	//logrus.WithFields(logrus.Fields{"aa":"aa","username":"rolin"}).Info("aaaa")
 	//logrus.Error("aaaa")
-
 }
